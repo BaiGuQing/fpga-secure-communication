@@ -2,25 +2,15 @@
 
 组长维护 main 分支和 Quartus 工程。每位成员从最新 main 创建自己的分支，提交负责的模块及测试文件。公共接口的变化先在群里说明，由组长协调后更新。
 
-## 组长建立共享仓库
-
-1. 在 GitHub 或团队可访问的 Git 服务创建一个空仓库，设置团队权限并邀请成员。
-2. 将仓库地址替换到以下命令中，在本项目目录运行。
-
-```powershell
-git remote add origin <仓库地址>
-git push -u origin main
-```
-
-本地已完成初始化后，可以用 `git remote -v` 查看当前绑定，用 `git status` 查看工作区。共享仓库创建后，组员通过仓库地址克隆。
+团队仓库为 [baoyuxuan15/fpga-secure-communication](https://github.com/baoyuxuan15/fpga-secure-communication)。组长可在仓库设置中给组员添加协作者权限。
 
 ## 组员日常操作
 
 首次获取仓库，在自己选定的目录执行：
 
 ```powershell
-git clone <仓库地址>
-cd <仓库目录>
+git clone https://github.com/baoyuxuan15/fpga-secure-communication.git D:\fpga-secure
+cd D:\fpga-secure
 git switch -c feature/uart
 ```
 

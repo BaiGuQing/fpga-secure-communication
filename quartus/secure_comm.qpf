@@ -1,0 +1,3 @@
+QUARTUS_VERSION = "18.0"
+PROJECT_REVISION = "board_echo"
+PROJECT_REVISION = "secure_comm"

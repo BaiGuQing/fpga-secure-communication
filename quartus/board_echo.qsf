@@ -1,0 +1,3 @@
+source board.tcl
+set_global_assignment -name TOP_LEVEL_ENTITY board_echo
+set_global_assignment -name VERILOG_FILE ../rtl/board_echo.v
