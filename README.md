@@ -2,6 +2,67 @@
 
 数字逻辑六人小组作业。电脑发一条加密命令，征途 Pro 解密后开关 D6，再把执行回执加密发回。三天交付两条命令、一盏灯和一个串口终端。
 
+## 当前文件架构
+
+下图列出当前 main 已纳入 Git 的文件。各模块的负责人及源码状态标在文件旁。
+
+```text
+fpga-secure-communication/
+├── README.md                    # 全组入口、文件架构与任务分工
+├── DESIGN.md                    # 三天交付目标与系统流程
+├── INTERFACE.md                 # 端口、握手、字节顺序与共用向量
+├── AGENTS.md                    # 所有成员与 AI 遵循的编码约束
+├── Git协作说明.md               # Fork、分支、Pull Request 与同步步骤
+├── 六人三天开发工作流.md         # 每日目标与集成安排
+├── 并行开发与交付.md             # 独立测试方法、交付文件与结果填写
+├── .gitignore                   # 编译及仿真生成文件的忽略规则
+│
+├── rtl/                         # FPGA 正式硬件源码
+│   ├── top.v                    # 1 号维护，顶层连接已建立
+│   ├── board_echo.v             # 1 号维护，线路自检逻辑已实现
+│   ├── uart_rx.v                # 2 号实现，当前为接收接口占位
+│   ├── uart_tx.v                # 2 号实现，当前为发送接口占位
+│   ├── comm_ctrl.v              # 3 号实现，当前为协议接口占位
+│   ├── aes_enc.v                # 4 号实现，当前为加密接口占位
+│   ├── aes_dec.v                # 5 号实现，当前为解密接口占位
+│   └── aes_tables.vh            # 已提供的 S 盒、逆 S 盒和固定轮密钥
+│
+├── quartus/                     # 1 号维护的 Quartus 工程
+│   ├── secure_comm.qpf          # 工程入口，包含两个 revision
+│   ├── board_echo.qsf           # 线路自检版本配置
+│   ├── secure_comm.qsf          # 正式加密通信版本配置
+│   ├── board.tcl                # 共用器件、引脚与 IO 配置
+│   └── board.sdc                # 50 MHz 主时钟约束
+│
+├── sim/                         # 仿真测试源码
+│   └── tb_aes.sv                # 已提供的共用 AES 加密/解密测试
+│
+├── pc/                          # 电脑端，6 号负责
+│   ├── reference.py             # 已提供的离线加解密与参考数据
+│   └── requirements.txt         # Python 依赖
+│
+└── tasks/                       # 各角色可直接交给 AI 的任务书
+    ├── 01-integration.md        # 1 号，组长与工程集成
+    ├── 02-uart.md               # 2 号，串口收发
+    ├── 03-protocol.md           # 3 号，协议与灯控制
+    ├── 04-encrypt.md            # 4 号，AES 加密
+    ├── 05-decrypt.md            # 5 号，AES 解密
+    └── 06-pc-test.md            # 6 号，电脑端与联调记录
+```
+
+成员开发时按任务书新建以下文件，提交后由组长同步上面的文件树。
+
+| 负责人 | 后续新建文件 | 用途 |
+|---|---|---|
+| 1 号 | sim/tb_system.sv（若编写） | 整机连接及流程仿真 |
+| 2 号 | sim/tb_uart.sv | UART 字节收发及位序验证 |
+| 3 号 | sim/tb_comm_ctrl.sv | 模拟上下游的协议独立验证 |
+| 4 号 | sim/tb_aes_enc_extra.sv | 加密核的扩展握手与复位验证 |
+| 5 号 | sim/tb_aes_dec_extra.sv | 解密核的扩展握手与复位验证 |
+| 6 号 | pc/demo.py、pc/test_demo.py（按实际测试编写） | 串口演示及电脑端测试 |
+
+Quartus 生成的程序保存在 quartus/output_files/，该目录由 Git 忽略。组长本机已有 board_echo.sof 自检程序，组员可从工程重新编译生成。
+
 ## 小组成员开始开发
 
 六个编号代表小组职责，成员姓名由小组填写。每位成员先阅读本页、DESIGN.md、INTERFACE.md、AGENTS.md，再打开自己对应的任务书。任务书包含修改范围、实现步骤、上下游、最小验证和可直接发给 AI 的提示词。
