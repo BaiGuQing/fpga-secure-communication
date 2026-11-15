@@ -2,6 +2,8 @@
 
 工作分支为 feature/integration。负责 rtl/top.v、rtl/board_echo.v、quartus/ 和公共文档，维护 rtl/aes_tables.vh 与共享的 sim/tb_aes.sv。角色 2–6 各自在自己的分支实现模块。
 
+开工时按 [并行开发与交付](../并行开发与交付.md) 使用模拟输入独立验证；交付文件和结果填写方式也见该说明。Fork 提交与同步见 [Git 协作说明](../Git协作说明.md)。
+
 ## 第一批工作
 
 1. 检查各人的模块声明与 INTERFACE.md，公布共同起点的 Git 提交号。

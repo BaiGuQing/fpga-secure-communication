@@ -2,6 +2,8 @@
 
 工作分支为 feature/aes-decrypt。负责 rtl/aes_dec.v，可增加 sim/tb_aes_dec_extra.sv。共用 sim/tb_aes.sv 由组长维护，可直接使用 TEST_DEC 模式。
 
+开工时按 [并行开发与交付](../并行开发与交付.md) 使用模拟输入独立验证；交付文件和结果填写方式也见该说明。Fork 提交与同步见 [Git 协作说明](../Git协作说明.md)。
+
 ## 已有材料
 
 模块端口与 aes_tables.vh 的 include 已备好。表内提供 aes_inv_sbox(byte) 及 aes_round_key(round)。固定密钥和列优先状态布局见 INTERFACE.md。可以直接把公开密文喂给本模块开发。

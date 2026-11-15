@@ -2,6 +2,8 @@
 
 工作分支为 feature/aes-encrypt。负责 rtl/aes_enc.v，可增加 sim/tb_aes_enc_extra.sv。共用 sim/tb_aes.sv 由组长维护，可直接使用其中的加密模式。
 
+开工时按 [并行开发与交付](../并行开发与交付.md) 使用模拟输入独立验证；交付文件和结果填写方式也见该说明。Fork 提交与同步见 [Git 协作说明](../Git协作说明.md)。
+
 ## 已有材料
 
 aes_enc 的端口与 aes_tables.vh 的 include 已备好。表内提供 aes_sbox(byte) 及 aes_round_key(round)，固定实验密钥为 00 至 0F。输入输出与矩阵的对应见 INTERFACE.md。

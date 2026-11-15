@@ -2,6 +2,8 @@
 
 工作分支为 feature/pc-test。负责新建 pc/demo.py，可维护 pc/reference.py 和 pc/requirements.txt。串口接口、密钥和回执见 INTERFACE.md。
 
+开工时按 [并行开发与交付](../并行开发与交付.md) 使用模拟输入独立验证；交付文件和结果填写方式也见该说明。Fork 提交与同步见 [Git 协作说明](../Git协作说明.md)。
+
 ## 已有材料
 
 reference.py 提供 transform(block, decrypt=False)、request(led_on)、reply(led_on)。分别用于单分组变换、生成请求和生成正常预期回执。requirements.txt 已列 cryptography 和 pyserial。

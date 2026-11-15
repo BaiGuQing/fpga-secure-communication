@@ -8,6 +8,8 @@
 
 网页 AI 使用者将这四份公共文档、对应任务书和该模块源码一起上传或粘贴。能够读取仓库的 AI 从当前分支直接读取。统一时序以 INTERFACE.md 为准。
 
+六个人如何当天同时开工、上游未完成时用什么测试、每人需要提交哪些文件，都列在 [并行开发与交付](并行开发与交付.md)。组员完成一版后提交源码和测试文件，运行命令、实际结果及模拟范围写入 Pull Request 正文。
+
 | 人员 | Git 分支 | 负责文件 | 交付条件 |
 |---|---|---|---|
 | [1 · 组长与集成](tasks/01-integration.md) | feature/integration | rtl/top.v、quartus/、共享文档及查表 | 第一天检查线路，第二天集成正式模块，第三天验收并保存提交号。 |
@@ -26,13 +28,9 @@
 
 ## 第一次开工
 
-组员将仓库克隆到全英文路径。现有 Quartus 18.0 编译检查在中文工程路径下遇到打开工程错误，英文路径已编译通过。将最后一行换成所负责的分支名。
+组员登录 GitHub，在原仓库右上角 Fork → Create fork 创建自己的副本，再用 GitHub Desktop 克隆自己账号下的仓库到英文路径，如 D:\fpga-secure。从 main 用 Current Branch → New Branch 创建所负责的任务分支。代码上传到自己的 Fork，再向原仓库 main 提交 Pull Request。完整步骤见 [Git 操作](Git协作说明.md)。
 
-```powershell
-git clone https://github.com/baoyuxuan15/fpga-secure-communication.git D:\fpga-secure
-cd D:\fpga-secure
-git switch -c feature/uart
-```
+组长在原仓库负责集成。现有 Quartus 18.0 编译检查在中文工程路径下遇到打开工程错误，英文路径已编译通过。
 
 每人推自己的分支，向 main 发起合并请求。第一天并行开发、晚间首次合并。第二天按串口、协议、解密、加密回执的顺序接入，下午首次整机上板。第三天留给复测、复位恢复和换人复现。[Git 操作](Git协作说明.md) · [三天工作流](六人三天开发工作流.md)
 
