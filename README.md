@@ -1,23 +1,32 @@
-# fpga-secure-communication
+# FPGA 硬件加密通信系统
 
 数字逻辑六人小组作业。电脑发一条加密命令，征途 Pro 解密后开关 D6，再把执行回执加密发回。三天交付两条命令、一盏灯和一个串口终端。
 
-## 六人领任务
+## 小组成员开始开发
 
-组长给 2–6 号填上姓名。每人交表中一项，附可重跑的测试或实板记录。
+六个编号代表小组职责，成员姓名由小组填写。每位成员先阅读本页、DESIGN.md、INTERFACE.md、AGENTS.md，再打开自己对应的任务书。任务书包含修改范围、实现步骤、上下游、最小验证和可直接发给 AI 的提示词。
+
+网页 AI 使用者将这四份公共文档、对应任务书和该模块源码一起上传或粘贴。能够读取仓库的 AI 从当前分支直接读取。统一时序以 INTERFACE.md 为准。
 
 | 人员 | Git 分支 | 负责文件 | 交付条件 |
 |---|---|---|---|
-| 1 · 组长 | feature/integration | rtl/top.v、quartus/ | 第一天在板上用 board_echo 收回 00 55 AA FF；第二天集成正式模块，保存可重建的提交号。 |
-| 2 · 串口 | feature/uart | rtl/uart_rx.v、rtl/uart_tx.v | 完成 115200、8N1 的收发。用 00 55 AA FF 验证连续字节，发送侧等待 ready 时数据稳定。 |
-| 3 · 协议 | feature/protocol | rtl/comm_ctrl.v | 用模拟 AES 验证第 16 个字节到达才解密、合法命令更新灯、非法命令保持灯，再按序发出 16 字节回执。 |
-| 4 · 加密 | feature/aes-encrypt | rtl/aes_enc.v | 复用已有 S 盒和轮密钥，逐轮实现加密，通过 sim/tb_aes.sv 的两个分组用例。 |
-| 5 · 解密 | feature/aes-decrypt | rtl/aes_dec.v | 复用逆 S 盒和同一套轮密钥，独立实现解密，通过同一测试的 TEST_DEC 模式。 |
-| 6 · 电脑端 | feature/pc-test | pc/demo.py（新建）、pc/reference.py | 参考加解密已提供。补上串口收发和开关灯命令，检查 16 字节回执，能报告串口超时。 |
+| [1 · 组长与集成](tasks/01-integration.md) | feature/integration | rtl/top.v、quartus/、共享文档及查表 | 第一天检查线路，第二天集成正式模块，第三天验收并保存提交号。 |
+| [2 · 串口收发](tasks/02-uart.md) | feature/uart | rtl/uart_rx.v、rtl/uart_tx.v、sim/tb_uart.sv | 完成 115200、8N1 的收发，验证独立位序、连续字节和发送握手。 |
+| [3 · 协议与灯控制](tasks/03-protocol.md) | feature/protocol | rtl/comm_ctrl.v、sim/tb_comm_ctrl.sv | 用模拟 AES 验证完整请求、单次启动、灯状态和 16 字节回执。 |
+| [4 · AES 加密](tasks/04-encrypt.md) | feature/aes-encrypt | rtl/aes_enc.v、独立扩展测试 | 复用已有 S 盒和轮密钥，通过标准分组、开灯分组及握手验证。 |
+| [5 · AES 解密](tasks/05-decrypt.md) | feature/aes-decrypt | rtl/aes_dec.v、独立扩展测试 | 复用逆 S 盒和轮密钥，通过标准密文、开灯密文及握手验证。 |
+| [6 · 电脑端与记录](tasks/06-pc-test.md) | feature/pc-test | pc/demo.py（新建）、pc/reference.py、电脑端测试 | 复用参考代码实现串口 on/off，核对回执，协助整机验证。 |
+
+## 共同编码约束
+
+- RTL 使用可综合 Verilog-2001，统一 50 MHz 上升沿时钟和低有效复位，时序块使用非阻塞赋值。
+- 保持现有模块端口和字节排列。数据只在公共握手约定的时钟沿接受，每个信号有唯一驱动者。
+- 每人维护自己的文件和测试，公共接口由组长协调更新。仿真替身放入 sim/，正式工程使用真实 RTL。
+- 每次交付附实际命令和结果。详细规则见 [AGENTS.md](AGENTS.md)，握手、复位、位序和向量见 [INTERFACE.md](INTERFACE.md)。
 
 ## 第一次开工
 
-克隆到全英文路径。这台 Windows 上的 Quartus 18.0 在中文工程路径下无法打开工程。将最后一行换成自己的分支名。
+组员将仓库克隆到全英文路径。现有 Quartus 18.0 编译检查在中文工程路径下遇到打开工程错误，英文路径已编译通过。将最后一行换成所负责的分支名。
 
 ```powershell
 git clone https://github.com/baoyuxuan15/fpga-secure-communication.git D:\fpga-secure
@@ -25,7 +34,7 @@ cd D:\fpga-secure
 git switch -c feature/uart
 ```
 
-把[项目要求](DESIGN.md)、[模块接口](INTERFACE.md)、[协作约定](AGENTS.md) 和自己的模块交给所用 AI。每人推自己的分支，向 main 发起合并请求。第一天并行开发、晚间首次合并。第二天按串口、协议、解密、加密回执的顺序接入，下午首次整机上板。第三天留给复测、复位恢复和换人复现。[Git 操作](Git协作说明.md) · [三天工作流](六人三天开发工作流.md)
+每人推自己的分支，向 main 发起合并请求。第一天并行开发、晚间首次合并。第二天按串口、协议、解密、加密回执的顺序接入，下午首次整机上板。第三天留给复测、复位恢复和换人复现。[Git 操作](Git协作说明.md) · [三天工作流](六人三天开发工作流.md)
 
 ## 第一次上板
 
@@ -52,3 +61,7 @@ vsim -c tb_aes -do "run -all; quit -f"
 ```
 
 两个模式分别检查标准分组和开灯分组。核实现后应输出 `PASS: both AES blocks`，当前占位模块会在等待 done 时超时。
+
+## 框架验证状态
+
+已核对电脑端离线参考向量、正式顶层端口展开及 board_echo 的 Quartus 完整编译。UART、协议和两个 AES 核的 RTL 目前仍为占位。硬件业务在各成员提交实现后联调验收。ModelSim 命令是成员的运行步骤，共用 AES testbench 在当前环境尚待运行。
